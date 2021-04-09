@@ -13,6 +13,25 @@ service PixRegistraChaveGrpcService {
 
 }
 
+service PixRemoveChaveGrpcService {
+
+  rpc remove(RemoveChavePixRequest) returns(RemoveChavePixResponse) {}
+
+}
+
+// Remove chave
+message RemoveChavePixRequest {
+  string clienteId = 1;
+  string pixId = 2;
+}
+
+message RemoveChavePixResponse {
+  string clienteId = 1;
+  string pixId = 2;
+}
+
+// Registra chave
+
 enum TipoConta {
   DESCONHECIDA = 0;
   CONTA_CORRENTE = 1;

@@ -133,3 +133,28 @@ O que esperamos ao final dessa atividade e que também consideramos importante:
 - não precisar de instruções especiais para preparar o ambiente ou para rodar sua bateria de testes;
 - sua bateria de testes deve rodar tanto na sua IDE quanto via **linha de comando**;
 - que outro desenvolvedor(a) do time consiga rodar facilmente a bateria de testes do seu serviço;
+
+## Removendo uma chave Pix existente
+
+### Necessidades
+
+Nosso usuário precisa excluir suas chaves Pix cadastradas, pois dessa forma, se necessário, ele poderá recriar uma chave associada à uma nova conta corrente ou poupança.
+
+### Restrições
+
+Para excluir uma chave Pix, precisamos que o usuário informe os seguintes dados:
+
+- **Pix ID** (idenficiador interno da chave Pix) deve ser obrigatório;
+
+- **Identificador do cliente** deve ser obrigatório:
+  - Código interno do cliente na Instituição Financeira existente no [Sistema ERP do Itaú](http://localhost:9091/api/v1/private/contas/todas);
+
+A chave pode ser removida somente pelo seu dono (cliente).
+
+### Resultado Esperado
+
+- Em caso de sucesso, a chave Pix deve ser excluída do sistema;
+
+- Em caso de chave não encontrada, deve-se retornar status de erro `NOT_FOUND` com uma mensagem amigável para o usuário final;
+
+- Em caso de erro, deve-se retornar o erro específico e amigável para o usuário final;

@@ -1,6 +1,6 @@
 package br.com.zup.pix.shared.validation
 
-import br.com.zup.pix.registra.ChavePixRequest
+import br.com.zup.pix.actions.registra.ChavePixRequest
 import io.micronaut.core.annotation.AnnotationValue
 import io.micronaut.validation.validator.constraints.ConstraintValidator
 import io.micronaut.validation.validator.constraints.ConstraintValidatorContext

@@ -1,4 +1,4 @@
-package br.com.zup.pix.registra
+package br.com.zup.pix.actions.registra
 
 import br.com.zup.integration.itau.ItauClient
 import br.com.zup.pix.models.ChavePix

@@ -1,4 +1,4 @@
-package br.com.zup.pix.registra
+package br.com.zup.pix.actions.registra
 
 import br.com.zup.TipoConta
 import br.com.zup.pix.TipoChave

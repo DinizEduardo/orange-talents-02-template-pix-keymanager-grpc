@@ -8,6 +8,6 @@ import java.util.*
 @Repository
 interface ChaveRepository : JpaRepository<ChavePix, UUID> {
 
-
+    fun findByIdAndClienteId(id: UUID, clienteId: UUID): Optional<ChavePix>
 
 }

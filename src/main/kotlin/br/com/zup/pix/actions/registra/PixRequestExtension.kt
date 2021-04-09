@@ -2,7 +2,7 @@ package br.com.zup.pix.utils
 
 import br.com.zup.RegistraChavePixRequest
 import br.com.zup.pix.TipoChave
-import br.com.zup.pix.registra.ChavePixRequest
+import br.com.zup.pix.actions.registra.ChavePixRequest
 
 fun RegistraChavePixRequest.toModel(): ChavePixRequest = ChavePixRequest(
     clienteId = this.clienteId,

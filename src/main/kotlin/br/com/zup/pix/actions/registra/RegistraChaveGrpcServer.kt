@@ -1,4 +1,4 @@
-package br.com.zup.pix.registra
+package br.com.zup.pix.actions.registra
 
 import br.com.zup.PixRegistraChaveGrpcServiceGrpc
 import br.com.zup.RegistraChavePixRequest

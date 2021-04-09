@@ -41,7 +41,7 @@ class ChavePix(
     fun toResponse(): RegistraChavePixResponse {
         return RegistraChavePixResponse.newBuilder()
             .setClienteId(this.clienteId.toString())
-            .setPixId(this.chave)
+            .setPixId(this.id.toString())
             .build()
     }
 

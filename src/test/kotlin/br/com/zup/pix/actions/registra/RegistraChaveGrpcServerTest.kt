@@ -1,4 +1,4 @@
-package br.com.zup.pix.registra
+package br.com.zup.pix.actions.registra
 
 import br.com.zup.*
 import br.com.zup.integration.itau.ClienteResponse
@@ -108,6 +108,29 @@ class RegistraChaveGrpcServerTest(
         ).let {
             assertNotNull(it.pixId)
             assertEquals(it.clienteId, CLIENTE_ID.toString())
+        }
+    }
+
+    @Test
+    fun `nao deveria cadastrar uma chave com digito do cpf invalido`() {
+        `when`(itauClient.consultaCliente(id = CLIENTE_ID.toString(), tipo = "CONTA_CORRENTE"))
+            .thenReturn(HttpResponse.ok(dadosRetornadosDoItau()))
+
+        assertThrows<StatusRuntimeException> {
+            grpcRegistra.registra(
+                RegistraChavePixRequest.newBuilder()
+                    .setChave("48948943862")
+                    .setTipoChave(TipoChave.CPF)
+                    .setClienteId(CLIENTE_ID.toString())
+                    .setTipoConta(TipoConta.CONTA_CORRENTE)
+                    .build()
+            )
+        }.let {
+            assertEquals(Status.INVALID_ARGUMENT.code, it.status.code)
+            assertEquals(
+                "registra.chave: O valor da chave não está valida para o seu tipo",
+                it.status.description
+            )
         }
     }
 
