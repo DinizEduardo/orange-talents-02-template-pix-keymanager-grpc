@@ -1,8 +1,13 @@
 package br.com.zup.pix.actions.remove
 
-import java.util.*
+import br.com.zup.pix.shared.validation.ValidaUUID
+import io.micronaut.core.annotation.Introspected
 
+@Introspected
 class RemoveChaveRequest(
-    val pixId: UUID,
-    val clienteId: UUID
+    @field:ValidaUUID(message = "Não é um formato valido para UUID")
+    val pixId: String,
+
+    @field:ValidaUUID(message = "Não é um formato valido para UUID")
+    val clienteId: String
 )

@@ -158,3 +158,38 @@ A chave pode ser removida somente pelo seu dono (cliente).
 - Em caso de chave não encontrada, deve-se retornar status de erro `NOT_FOUND` com uma mensagem amigável para o usuário final;
 
 - Em caso de erro, deve-se retornar o erro específico e amigável para o usuário final;
+
+
+## Testando a Remoção de chave Pix existente
+
+### Necessidades
+
+Nós finalizamos a implementação do endpoint responsável por [remover uma chave Pix existente](010-removendo-uma-chave-pix-existente.md), mas precisamos cobrí-la com testes automatizados antes de colocá-la em produção.
+
+A idéia de escrever testes é **encontrar bugs** antes de ir para produção. Quanto mais cedo encontrarmos um bug mais barato é sua resolução. Por esse motivo, precisamos encontrar bugs antes de deployar a aplicação em ambiente de produção (ou mesmo homologação).
+
+Então, vamos cobrir com testes esse endpoint?
+
+### Restrições
+
+Escrever testes automatizados para o endpoint gRPC de Remoção de chave Pix implementado de tal forma que os testes garantam o que foi especificado na atividade.
+
+Para guia-lo(a) nessa atividade, elencamos algumas restrições e pontos de atenção:
+
+- favoreça a escrita de **testes de unidade** para lógicas de negócio que não fazem integração com serviços externos (banco de dados, APIs REST, mensageria, sistema de arquivos etc);
+- favoreça a escrita de **testes de integração** para lógicas de negócio que conversam com serviços externos, como banco de dados, APIs REST etc;
+- para tornar o teste mais próximo da produção, nos testes de integração **levante um servidor gRPC embarcado** e consuma os endpoints nos testes de integração;
+- lembre-se de **testar os fluxos alternativos**, como cenários de erros do sistema ou entrada de dados inválida pelo usuário/serviço;
+- favoreça o uso de um **banco de dados em memória** para facilitar a limpeza dos dados e simplificar o ambiente na sua pipeline de CI/CD;
+- favoreça **mocks para chamadas à serviços externos**, como a API REST do Sistema ERP-ITAU e do Sistema Pix do BCB;
+- fique sempre de olho na **cobertura do seu código**, especialmente nas branches de código, como `if`, `else`, `while`, `for`, `try-catch` etc;
+
+### Resultado Esperado
+
+O que esperamos ao final dessa atividade e que também consideramos importante:
+
+- ter um percentual de cobertura de no mínimo **90% do código de produção**;
+- ter coberto cenários felizes (happy-path) e fluxos alternativos;
+- não precisar de instruções especiais para preparar o ambiente ou para rodar sua bateria de testes;
+- sua bateria de testes deve rodar tanto na sua IDE quanto via **linha de comando**;
+- que outro desenvolvedor(a) do time consiga rodar facilmente a bateria de testes do seu serviço;

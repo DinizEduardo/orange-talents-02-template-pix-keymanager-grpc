@@ -6,8 +6,8 @@ import br.com.zup.RemoveChavePixResponse
 import java.util.*
 
 fun RemoveChavePixRequest.toModel(): RemoveChaveRequest = RemoveChaveRequest(
-    clienteId = UUID.fromString(this.clienteId),
-    pixId =  UUID.fromString(this.pixId)
+    clienteId = this.clienteId,
+    pixId =  this.pixId
 )
 
 fun RemoveChavePixRequest.toResponse(): RemoveChavePixResponse = RemoveChavePixResponse

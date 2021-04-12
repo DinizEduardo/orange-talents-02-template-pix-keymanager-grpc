@@ -17,4 +17,11 @@ class Clients {
         return PixRegistraChaveGrpcServiceGrpc.newBlockingStub(channel);
     }
 
+    @Bean
+    fun grpcRemove(
+        @GrpcChannel(GrpcServerChannel.NAME) channel: ManagedChannel
+    ) : PixRemoveChaveGrpcServiceGrpc.PixRemoveChaveGrpcServiceBlockingStub {
+        return PixRemoveChaveGrpcServiceGrpc.newBlockingStub(channel)
+    }
+
 }
