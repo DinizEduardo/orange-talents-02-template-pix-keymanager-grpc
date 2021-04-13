@@ -3,17 +3,24 @@ package br.com.zup.pix.actions.remove
 import br.com.zup.PixRemoveChaveGrpcServiceGrpc
 import br.com.zup.RemoveChavePixRequest
 import br.com.zup.TipoConta
+import br.com.zup.integration.bcb.*
 import br.com.zup.pix.TipoChave
 import br.com.zup.pix.models.ChavePix
 import br.com.zup.pix.repositories.ChaveRepository
 import io.grpc.Status
 import io.grpc.StatusRuntimeException
+import io.micronaut.http.HttpResponse
+import io.micronaut.test.annotation.MockBean
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.mockito.Mockito
+import org.mockito.Mockito.`when`
+import java.time.LocalDateTime
 import java.util.*
+import javax.inject.Inject
 
 @MicronautTest(transactional = false)
 class RemoveChaveGrpcServerTest (
@@ -21,6 +28,9 @@ class RemoveChaveGrpcServerTest (
     private val grpcRemove: PixRemoveChaveGrpcServiceGrpc.PixRemoveChaveGrpcServiceBlockingStub
 ) {
     private lateinit var chavePix: ChavePix
+
+    @Inject
+    lateinit var bcbClient: BcbClient
 
     companion object {
         val CLIENTE_ID = UUID.randomUUID()
@@ -43,6 +53,15 @@ class RemoveChaveGrpcServerTest (
 
         chaveRepository.save(chavePix)
 
+        `when`(bcbClient.deleta(chavePix.chave, DeletaChaveBcbRequest(key = chavePix.chave)))
+            .thenReturn(HttpResponse.ok(
+                DeletaChaveBcbResponse(
+                    key = chavePix.chave,
+                    participant = "60701190",
+                    deletedAt = LocalDateTime.now()
+                )
+            ))
+
         grpcRemove.remove(
             RemoveChavePixRequest.newBuilder()
                 .setClienteId(chavePix.clienteId.toString())
@@ -56,6 +75,48 @@ class RemoveChaveGrpcServerTest (
             assertEquals(0, chaveRepository.findAll().size)
         }
 
+    }
+
+    @Test
+    fun `nao deveria excluir uma chave que nao foi excluida no bcb por retornar 403`() {
+        chaveRepository.save(chavePix)
+
+        `when`(bcbClient.deleta(chavePix.chave, DeletaChaveBcbRequest(key = chavePix.chave)))
+            .thenReturn(HttpResponse.unauthorized())
+
+        assertThrows<StatusRuntimeException> {
+            grpcRemove.remove(
+                RemoveChavePixRequest.newBuilder()
+                    .setClienteId(chavePix.clienteId.toString())
+                    .setPixId(chavePix.id.toString())
+                    .build()
+            )
+        }.let {
+            assertEquals(Status.FAILED_PRECONDITION.code, it.status.code)
+            assertEquals("Erro ao remover chave pix no banco central (BCB)", it.status.description)
+            assertEquals(1, chaveRepository.findAll().size)
+        }
+    }
+
+    @Test
+    fun `nao deveria excluir uma chave que nao foi excluida no bcb por retornar 404`() {
+        chaveRepository.save(chavePix)
+
+        `when`(bcbClient.deleta(chavePix.chave, DeletaChaveBcbRequest(key = chavePix.chave)))
+            .thenReturn(HttpResponse.notFound())
+
+        assertThrows<StatusRuntimeException> {
+            grpcRemove.remove(
+                RemoveChavePixRequest.newBuilder()
+                    .setClienteId(chavePix.clienteId.toString())
+                    .setPixId(chavePix.id.toString())
+                    .build()
+            )
+        }.let {
+            assertEquals(Status.FAILED_PRECONDITION.code, it.status.code)
+            assertEquals("Erro ao remover chave pix no banco central (BCB)", it.status.description)
+            assertEquals(1, chaveRepository.findAll().size)
+        }
     }
 
     @Test
@@ -105,9 +166,15 @@ class RemoveChaveGrpcServerTest (
             )
         }.let {
             assertEquals(Status.INVALID_ARGUMENT.code, it.status.code)
-            assertEquals("remove.request.pixId: O valor deve ser um UUID, remove.request.clienteId: O valor deve ser um UUID", it.status.description)
+            assertEquals(it.status.description!!.length, 98)
+            assertTrue(it.status.description!!.endsWith("O valor deve ser um UUID"))
             assertEquals(1, chaveRepository.findAll().size)
         }
+    }
+
+    @MockBean(BcbClient::class)
+    fun bcbClient(): BcbClient? {
+        return Mockito.mock(BcbClient::class.java)
     }
 
 }

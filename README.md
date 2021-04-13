@@ -223,3 +223,39 @@ Um detalhe importante, toda chave Pix registrada no BCB pelo nosso serviço deve
 - Ao registrar uma chave do tipo `ALEATORIA` no BCB, deve-se também atualizar a chave no nosso sistema com a chave gerada pelo BCB;
 
 - Uma chave Pix no nosso sistema somente poderá ser disponibilizada para uso dos nossos usuários (compartilhamento, geração de cobranças, pagamentos etc) quando ela estiver devidamente registrada e linkada à uma chave Pix existente no BCB;
+
+## Testando o Registro e Exclusão de chaves Pix no BCB
+
+### Necessidades
+
+Mais uma tarefa finalizada, mas isso não quer dizer que acabou!
+
+Precisamos ajustar nossos testes automatizados com as mudanças feitas no código de produção dos endpoints responsáveis por [registrar uma nova chave Pix](005-registrando-uma-nova-chave-pix.md) e  [remover uma chave Pix existente](010-removendo-uma-chave-pix-existente.md), afinal eles agora se [integram com a API REST do Sistema Pix do BCB](015-registrando-e-excluindo-chaves-pix-no-bcb.md).
+
+Um aspecto importante dos testes é que eles **evoluem juntamente com o código de produção**. Assim como nosso código de produção, o código de testes também precisa ser mantido, refatorado e melhorado durante o ciclo de vida do software. Ignorar isso é ter uma bateria de testes frágil, lenta e que pode gerar resultados falso-positivo para as lógicas de negócio que escrevemos.
+
+Só eu acho que temos que evoluir o código de testes? :-)
+
+### Restrições
+
+Evoluir e adaptar o código de testes para os endpoints gRPC de Registro e Remoção de chave Pix de modo que os testes garantam a corretude do foi [especificado na atividade de integração com o BCB](/mnt/c/Users/Zupper/Development/Zup_Academy/Orange-Stack/documentacao-orange-stack/desafio-01/01-key-manager/015-registrando-e-excluindo-chaves-pix-no-bcb.md).
+
+Para guia-lo(a) nessa atividade, elencamos algumas restrições e pontos de atenção:
+
+- favoreça a escrita de **testes de unidade** para lógicas de negócio que não fazem integração com serviços externos (banco de dados, APIs REST, mensageria, sistema de arquivos etc);
+- favoreça a escrita de **testes de integração** para lógicas de negócio que conversam com serviços externos, como banco de dados, APIs REST etc;
+- para tornar o teste mais próximo da produção, nos testes de integração **levante um servidor gRPC embarcado** e consuma os endpoints nos testes de integração;
+- lembre-se de **testar os fluxos alternativos**, como cenários de erros do sistema ou entrada de dados inválida pelo usuário/serviço;
+- favoreça o uso de um **banco de dados em memória** para facilitar a limpeza dos dados e simplificar o ambiente na sua pipeline de CI/CD;
+- favoreça **mocks para chamadas à serviços externos**, como a API REST do Sistema ERP-ITAU e do Sistema Pix do BCB;
+- fique sempre de olho na **cobertura do seu código**, especialmente nas branches de código, como `if`, `else`, `while`, `for`, `try-catch` etc;
+
+### Resultado Esperado
+
+O que esperamos ao final dessa atividade e que também consideramos importante:
+
+- ter um percentual de cobertura de no mínimo **90% do código de produção**;
+- ter coberto cenários felizes (happy-path) e fluxos alternativos;
+- não precisar de instruções especiais para preparar o ambiente ou para rodar sua bateria de testes;
+- sua bateria de testes deve rodar tanto na sua IDE quanto via **linha de comando**;
+- que outro desenvolvedor(a) do time consiga rodar facilmente a bateria de testes do seu serviço;

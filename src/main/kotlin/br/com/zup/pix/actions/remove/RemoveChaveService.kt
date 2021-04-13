@@ -10,6 +10,7 @@ import br.com.zup.pix.shared.exception.ClienteNotFoundException
 import io.micronaut.http.HttpStatus
 import io.micronaut.validation.Validated
 import org.slf4j.LoggerFactory
+import java.lang.Exception
 import java.lang.IllegalStateException
 import java.util.*
 import javax.inject.Inject
@@ -35,14 +36,24 @@ class RemoveChaveService(
             throw ClienteNotFoundException("Não foi possivel encontrar a chave solicitada")
         }
 
-        val bcbExcluiu = bcbClient.deleta(
-            key = chavePix.get().chave,
-            request = DeletaChaveBcbRequest(key = request.pixId)
-        )
+        logger.info("Começa o processo de exclusão do bcb")
+        try {
+            val bcbExcluiu = bcbClient.deleta(
+                key = chavePix.get().chave,
+                request = DeletaChaveBcbRequest(key = chavePix.get().chave)
+            )
 
-        if(bcbExcluiu.status != HttpStatus.OK) {
+            logger.info("Terminou a requisição de exclusão do bcb")
+
+            if (bcbExcluiu.status != HttpStatus.OK) {
+                throw IllegalStateException("Erro ao remover chave pix no banco central (BCB)")
+            }
+        } catch (e: Exception) {
             throw IllegalStateException("Erro ao remover chave pix no banco central (BCB)")
         }
+
+        logger.info("Excluiu com sucesso no bcb")
+
         chaveRepository.delete(chavePix.get())
 
         logger.info("Service -> Terminou o processo de exclusão da chava ${request.pixId}")

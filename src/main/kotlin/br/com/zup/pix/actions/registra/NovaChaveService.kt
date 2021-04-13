@@ -60,20 +60,22 @@ class NovaChaveService(
                 )
             ))
 
-            if(bcbResponse.status != HttpStatus.CREATED) {
-                logger.warn("Ocorreu um erro para cadastrar a chave no bcb")
-                throw IllegalStateException("Erro ao tentar registrar chave no Banco Do Brasil (BCB)")
-            }
+//            if(bcbResponse.status != HttpStatus.CREATED) {
+//                logger.warn("Ocorreu um erro para cadastrar a chave no bcb")
+//                throw IllegalStateException("Erro ao tentar registrar chave no Banco Do Brasil (BCB)")
+//            }
 
 
             logger.info("Chave cadastrada com sucesso no bcb")
 
             chavePix.atualiza(bcbResponse.body()!!.key)
         } catch (e: HttpClientResponseException) {
+            logger.warn("Deu algum problema na hora de cadastrar a chave no bcb")
             if(e.status == HttpStatus.UNPROCESSABLE_ENTITY) {
+                logger.warn("A chave ja existe no banco de dados da bcb")
                 throw DuplicateException("Esse valor de chave já está cadastrada no banco do brasil (BCB)")
             }
-
+            logger.warn("Algum erro desconhecido no bcb")
             throw IllegalStateException("Erro ao tentar registrar chave no banco do brasil (bcb)")
         }
 
