@@ -45,5 +45,10 @@ class ChavePix(
             .build()
     }
 
+    fun atualiza(key: String) {
+        if(this.tipoChave == TipoChave.ALEATORIA)
+            this.chave = key
+    }
+
 
 }
