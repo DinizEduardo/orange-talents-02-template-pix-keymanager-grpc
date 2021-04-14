@@ -24,4 +24,11 @@ class Clients {
         return PixRemoveChaveGrpcServiceGrpc.newBlockingStub(channel)
     }
 
+    @Bean
+    fun grpcConsulta(
+        @GrpcChannel(GrpcServerChannel.NAME) channel: ManagedChannel
+    ) : PixConsultaChaveGrpcServiceGrpc.PixConsultaChaveGrpcServiceBlockingStub {
+        return PixConsultaChaveGrpcServiceGrpc.newBlockingStub(channel)
+    }
+
 }
