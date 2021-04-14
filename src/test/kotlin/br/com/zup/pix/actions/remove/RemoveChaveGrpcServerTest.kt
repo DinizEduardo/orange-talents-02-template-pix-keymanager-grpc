@@ -4,8 +4,13 @@ import br.com.zup.PixRemoveChaveGrpcServiceGrpc
 import br.com.zup.RemoveChavePixRequest
 import br.com.zup.TipoConta
 import br.com.zup.integration.bcb.*
+import br.com.zup.integration.itau.Instituicao
+import br.com.zup.integration.itau.Titular
+import br.com.zup.pix.Instituicoes
 import br.com.zup.pix.TipoChave
+import br.com.zup.pix.actions.registra.RegistraChaveGrpcServerTest
 import br.com.zup.pix.models.ChavePix
+import br.com.zup.pix.models.Conta
 import br.com.zup.pix.repositories.ChaveRepository
 import io.grpc.Status
 import io.grpc.StatusRuntimeException
@@ -44,7 +49,14 @@ class RemoveChaveGrpcServerTest (
             clienteId = CLIENTE_ID,
             tipoChave = TipoChave.ALEATORIA,
             tipoConta = TipoConta.CONTA_CORRENTE,
-            chave = UUID.randomUUID().toString()
+            chave = UUID.randomUUID().toString(),
+            conta = Conta(
+                instituicao = Instituicoes.nome("60701190"),
+                agencia = "0001",
+                numero =  "236906",
+                cpfTitular = "48948943863",
+                nomeTitular = "Eduardo Diniz",
+            )
         )
     }
 

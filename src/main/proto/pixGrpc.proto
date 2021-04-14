@@ -26,6 +26,31 @@ service PixConsultaChaveGrpcService {
 
 }
 
+service PixListaChavesPorClienteGrpcService {
+
+  rpc lista(ListaChavePixRequest) returns ( ListaChavePixResponse) {}
+
+}
+
+message ListaChavePixResponse {
+  message Chave {
+    string pixId = 1;
+    TipoChave tipoChave = 2;
+    string chave = 3;
+    TipoConta tipoConta = 4;
+    google.protobuf.Timestamp criadaEm = 5;
+  }
+
+  repeated Chave chaves = 1;
+  string clienteId = 2;
+}
+
+message ListaChavePixRequest {
+  string clienteId = 1;
+}
+
+
+
 message ConsultaChavePixRequest {
 
   message FiltroPixId {
