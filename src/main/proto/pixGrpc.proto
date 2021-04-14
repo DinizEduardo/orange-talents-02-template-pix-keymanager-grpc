@@ -6,6 +6,7 @@ option java_outer_classname = "PixGrpc";
 option objc_class_prefix = "HLW";
 
 package br.com.zup;
+import "google/protobuf/timestamp.proto";
 
 service PixRegistraChaveGrpcService {
 
@@ -18,6 +19,53 @@ service PixRemoveChaveGrpcService {
   rpc remove(RemoveChavePixRequest) returns(RemoveChavePixResponse) {}
 
 }
+
+service PixConsultaChaveGrpcService {
+
+  rpc pesquisa(ConsultaChavePixRequest) returns (ConsultaChavePixResponse) {}
+
+}
+
+message ConsultaChavePixRequest {
+
+  message FiltroPixId {
+    string clienteId = 1;
+    string pixId = 2;
+  }
+
+  oneof filtro {
+    FiltroPixId pixId = 1;
+    string chave = 2;
+  }
+
+}
+
+message ConsultaChavePixResponse {
+
+  message ChavePix {
+
+    message InfoConta {
+      TipoConta tipoConta = 1;
+      string instituicao = 2;
+      string nomeTitular = 3;
+      string cpfTitular = 4;
+      string agencia = 5;
+      string numero = 6;
+    }
+
+    TipoChave tipoChave = 1;
+    string chave = 2;
+    InfoConta conta = 3;
+    google.protobuf.Timestamp criadaEm = 4;
+
+  }
+
+  string clienteId = 1;
+  string pixId = 2;
+  ChavePix chave = 3;
+
+}
+
 
 // Remove chave
 message RemoveChavePixRequest {

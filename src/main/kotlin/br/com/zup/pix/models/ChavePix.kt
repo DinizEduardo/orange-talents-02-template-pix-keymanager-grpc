@@ -6,6 +6,7 @@ import br.com.zup.TipoConta
 import java.time.LocalDateTime
 import java.util.*
 import javax.persistence.*
+import javax.validation.Valid
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotNull
 
@@ -25,6 +26,10 @@ class ChavePix(
     @field:NotNull
     @Enumerated(EnumType.STRING)
     val tipoConta: TipoConta,
+
+    @field:Valid
+    @Embedded
+    var conta: Conta
 ) {
 
     @Id
@@ -49,6 +54,8 @@ class ChavePix(
         if(this.tipoChave == TipoChave.ALEATORIA)
             this.chave = key
     }
+
+    fun pertence(clienteId: UUID) = this.clienteId.equals(clienteId)
 
 
 }

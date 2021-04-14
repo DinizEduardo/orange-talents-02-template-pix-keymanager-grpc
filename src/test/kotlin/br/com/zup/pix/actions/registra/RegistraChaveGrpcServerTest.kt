@@ -108,6 +108,9 @@ class RegistraChaveGrpcServerTest(
             assertNotNull(it.pixId)
             assertEquals(it.clienteId, CLIENTE_ID.toString())
         }
+
+
+
     }
 
     @Test
@@ -226,7 +229,7 @@ class RegistraChaveGrpcServerTest(
             .setTipoConta(TipoConta.CONTA_CORRENTE)
             .build()
 
-        chaveRepository.save(dados.toModel().toModel())
+        chaveRepository.save(dados.toModel().toModel(dadosRetornadosDoItau().toModel()))
 
         assertThrows<StatusRuntimeException> {
             grpcRegistra.registra(dados)
