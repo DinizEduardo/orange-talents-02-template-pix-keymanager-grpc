@@ -31,4 +31,11 @@ class Clients {
         return PixConsultaChaveGrpcServiceGrpc.newBlockingStub(channel)
     }
 
+    @Bean
+    fun grpcLista(
+        @GrpcChannel(GrpcServerChannel.NAME) channel: ManagedChannel
+    ) : PixListaChavesPorClienteGrpcServiceGrpc.PixListaChavesPorClienteGrpcServiceBlockingStub {
+        return PixListaChavesPorClienteGrpcServiceGrpc.newBlockingStub(channel)
+    }
+
 }
